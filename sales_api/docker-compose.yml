@@ -1,0 +1,37 @@
+version: '3.7'
+
+services:
+  salesdb:
+    image: mysql:8
+    container_name: salesdb
+    volumes:
+      - /var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: sales123
+      MYSQL_DATABASE: salesdb
+      MYSQL_USER: salesuser
+      MYSQL_PASSWORD: sales123
+    networks:
+      - sales-network
+      
+  sales-app:
+    container_name: sales-app
+    build: .
+    image: sales/app
+    restart: on-failure
+    volumes:
+      - .:/app
+    ports:
+      - '3333:3333'
+    env_file:
+      - .env
+    networks:
+      - sales-network
+    depends_on:
+      - 'salesdb'
+
+networks:
+  sales-network:
+    driver: bridge
