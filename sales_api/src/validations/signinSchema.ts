@@ -1,6 +1,6 @@
 import yup from "../config/yup";
 
 export const validationSignin = yup.object().shape({
-  email: yup.string().email().required("O campo e-mail é obrigatório."),
-  senha: yup.string().required("O campo senha é obrigatório."),
+  email: yup.string().email("Email inválido").required("O email é obrigatório"),
+  password: yup.string().required("A senha é obrigatória."),
 });

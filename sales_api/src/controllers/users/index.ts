@@ -3,7 +3,8 @@ import { userValidation } from "../../validations/signupSchema";
 import Users from "../../db/models/Users";
 import { validationSignin } from "../../validations/signinSchema";
 import { findUserByEmail } from "../../models/users";
-import bcrypt from "bcrypt";
+// import * as bcrypt from "bcrypt";
+const bcrypt = require("bcrypt");
 import jwt from "jsonwebtoken";
 import { jwtSecret } from "../../config/jwtSecret";
 
@@ -11,6 +12,7 @@ export const signin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
+    await validationSignin.validate(req.body);
     const user: any = await findUserByEmail(email);
     const validatePassword = await bcrypt.compare(password, user?.password);
     if (!user || !validatePassword) {
@@ -37,17 +39,11 @@ export const signin = async (req: Request, res: Response) => {
       token,
     });
   } catch (error: any) {
-    await validationSignin.validate(req.body);
     return res.status(400).json({ mensagem: error?.message });
   }
 };
 
 export const signUp = async (req: Request, res: Response) => {
-  if (!req.body) {
-    return res
-      .status(400)
-      .json({ message: "Dados ausentes no corpo da solicitação." });
-  }
   const { name, email, password } = req.body;
 
   try {

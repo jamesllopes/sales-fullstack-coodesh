@@ -4,7 +4,8 @@
   "main": "app.ts",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/app.ts"
+    "dev": "nodemon src/app.ts",
+    "migration:run": "yarn sequelize-cli db:migrate"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -23,6 +24,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.5.7",
     "@types/sequelize": "^4.28.15",
     "@types/yup": "^0.32.0",

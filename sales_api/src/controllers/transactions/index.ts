@@ -1,33 +1,52 @@
-// export const transaction = async (req: Request, res: Response) => {
-//     if (!req.body) {
-//       return res
-//         .status(400)
-//         .json({ message: "Dados ausentes no corpo da solicitação." });
-//     }
-//     const { name, email, password } = req.body;
+import { Request, Response } from "express";
+import { transactionValidation } from "../../validations/transactionSchema";
+import TypeTransactions from "../../db/models/TypeTransactions";
+import { objectData } from "../../utils/typeDescription";
+import Transactions from "../../db/models/Transations";
+import { TransactionProps } from "../../types/transactions";
 
-//     try {
-//       await userValidation.validate(req.body);
+interface CustomRequest extends Request {
+  user?: {
+    id: string | number;
+  };
+}
 
-//       const findUser = await Users.findOne({
-//         where: { email: email },
-//       });
+export const createTransaction = async (req: CustomRequest, res: Response) => {
+  const { type, date, product, value, seller }: TransactionProps = req.body;
+  const userId = req?.user?.id;
+  try {
+    await transactionValidation.validate(req.body);
 
-//       if (findUser) {
-//         return res
-//           .status(403)
-//           .json({ message: "email já está sendo utilizado." });
-//       }
-//       const newUser = await Users.create({
-//         name,
-//         email,
-//         password,
-//       });
-//       if (!newUser) {
-//         return res.status(400).json({ message: "Usuário não pôde ser criado" });
-//       }
-//       return res.status(200).json({ message: "Usuário criado com sucesso." });
-//     } catch (error: any) {
-//       return res.status(400).json({ mensagem: error?.message });
-//     }
-//   };
+    const data = objectData(type);
+    const newTypeTransaction = await TypeTransactions.create({
+      ...data,
+    });
+
+    if (!newTypeTransaction) {
+      return res
+        .status(400)
+        .json({ message: "O tipo de transação nao pôde ser criado." });
+    }
+
+    const newTransaction = await Transactions.create({
+      type_id: newTypeTransaction.id,
+      user_id: userId as number,
+      date,
+      product,
+      value,
+      seller,
+    });
+
+    if (!newTransaction) {
+      return res
+        .status(400)
+        .json({ message: "A transação nao pôde ser criada." });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Transação cadastrada com sucesso." });
+  } catch (error: any) {
+    return res.status(400).json({ mensagem: error?.message });
+  }
+};

@@ -3,6 +3,7 @@ import sequelizeConnection from "../sequelize";
 
 interface TypeTransactionsAttributes {
   id: number;
+  type: 1 | 2 | 3 | 4;
   description: string;
   nature: string;
   signal: string;
@@ -17,6 +18,7 @@ export default class TypeTransactions
   implements TypeTransactionsAttributes
 {
   public id!: number;
+  public type!: 1 | 2 | 3 | 4;
   public description!: string;
   public nature!: string;
   public signal!: string;
@@ -31,6 +33,10 @@ TypeTransactions.init(
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
       primaryKey: true,
+    },
+    type: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     description: {
       type: DataTypes.STRING,

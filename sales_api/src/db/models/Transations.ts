@@ -1,10 +1,12 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelizeConnection from "../sequelize";
 import TypeTransactions from "./TypeTransactions";
+import Users from "./Users";
 
 interface TransactionsAttributes {
   id: number;
   type_id: number;
+  user_id: number;
   date: Date;
   product: string;
   value: number;
@@ -21,6 +23,7 @@ export default class Transactions
 {
   public id!: number;
   public type_id!: number;
+  public user_id!: number;
   public date!: Date;
   public product!: string;
   public value!: number;
@@ -38,6 +41,10 @@ Transactions.init(
       primaryKey: true,
     },
     type_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -65,6 +72,11 @@ Transactions.init(
 );
 
 Transactions.belongsTo(TypeTransactions, {
-  foreignKey: "type",
+  foreignKey: "type_id",
   as: "transactionType",
+});
+
+Transactions.belongsTo(Users, {
+  foreignKey: "user_id",
+  as: "users",
 });

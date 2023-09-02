@@ -17,6 +17,14 @@ module.exports = {
           key: "id", // Nome da coluna referenciada
         },
       },
+      user_id: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+      },
       date: {
         type: Sequelize.DATE,
         allowNull: false,
