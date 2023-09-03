@@ -9,8 +9,9 @@ export interface TransactionProps {
 }
 
 export interface TypeTransactionProps {
-  type: 1 | 2 | 3 | 4;
-  description: string;
-  nature: "Saída" | "Entrada";
-  signal: "+" | "-";
+  type?: 1 | 2 | 3 | 4 | number;
+  description?: string;
+  nature?: "Saída" | "Entrada";
+  signal?: "+" | "-";
 }
+[];

@@ -1,6 +1,6 @@
 import { TypeTransactionProps } from "../types/transactions";
 
-type index = 1 | 2 | 3 | 4;
+type index = 1 | 2 | 3 | 4 | number;
 const typeDescription: { [key in index]: TypeTransactionProps } = {
   1: {
     type: 1,
