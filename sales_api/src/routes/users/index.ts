@@ -5,9 +5,5 @@ const router = express();
 
 router.post("/api/signup", signUp);
 router.post("/api/signin", signin);
-router.use(authToken);
-router.get("/", (req, res) => {
-  res.send("Passou");
-});
 
 export default router;
