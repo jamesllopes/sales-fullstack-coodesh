@@ -20,10 +20,9 @@ const { Op } = Sequelize;
 export const uploadFile = async (req: CustomRequest, res: Response) => {
   const userId = req?.user?.id;
   const file = req.body;
-  const { name } = req.body;
 
   if (!file || file.length === 0) {
-    return res.status(400).json({ error: "Nenhum arquivo enviado." });
+    return res.status(400).json({ message: "Envie um arquivo válido." });
   }
 
   try {
@@ -33,13 +32,20 @@ export const uploadFile = async (req: CustomRequest, res: Response) => {
     await fs.writeFile(filePath, file);
 
     const fileString = (await fs.readFile(filePath)).toString();
-
     const lines = fileString.trim().split("\n");
 
     const typeTransaction: any = lines.map((item) => {
       const dataTypeTransaction = objectData(Number(item.slice(0, 1)));
       return dataTypeTransaction;
     });
+
+    const hasNullTypeItem = typeTransaction.some(
+      (transact: any) => transact.type_id === null
+    );
+
+    if (hasNullTypeItem) {
+      return res.status(400).json({ message: "Envie um arquivo válido" });
+    }
 
     const newTypeTransaction = await TypeTransactions.bulkCreate(
       typeTransaction
@@ -65,6 +71,13 @@ export const uploadFile = async (req: CustomRequest, res: Response) => {
         seller: item.slice(66, 86),
       };
     });
+    const hasNullItem = transactionsToCreate.some(
+      (transact: any) => transact.type_id === null
+    );
+
+    if (hasNullItem) {
+      return res.status(400).json({ message: "Envie um arquivo válido" });
+    }
 
     const newTransaction = await Transactions.bulkCreate(transactionsToCreate);
 
@@ -88,30 +101,34 @@ export const getTransactions = async (req: Request, res: Response) => {
   try {
     const result = await Transactions.findAll({
       attributes: [
-        "id",
-        "date",
         "product",
         "seller",
-        [Sequelize.literal("SUM(value)"), "totalValue"],
+        "date",
+        [Sequelize.fn("SUM", Sequelize.col("value")), "totalValue"],
+        [Sequelize.col("transactionType.id"), "transactionTypeId"],
+        "transactionType.description",
+        "transactionType.nature",
       ],
       include: [
         {
           model: TypeTransactions,
           as: "transactionType",
-          where: {
-            type: {
-              [Op.in]: [1, 2],
-            },
-          },
-          attributes: ["description"],
+          attributes: ["description", "nature"], // Não selecionamos nenhum atributo da tabela TypeTransactions
         },
       ],
-      group: ["id"],
+      group: [
+        "seller",
+        "product",
+        "date",
+        "transactionType.description",
+        "transactionType.nature",
+        "transactionType.id", // Incluímos o ID no GROUP BY
+      ],
     });
 
     console.log(result);
     return res.status(200).json({ data: result });
   } catch (error: any) {
-    return res.status(400).json({ message: error?.message });
+    return res.status(400).json({ message: error });
   }
 };

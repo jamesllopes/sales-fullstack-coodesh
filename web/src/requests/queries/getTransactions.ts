@@ -1,13 +1,12 @@
 import { api } from "@/services/axios";
-// import { CurrencyList } from "@/types/commom";
-import { QueryFunctionContext, useQuery } from "react-query";
+import { useQuery } from "react-query";
 
 async function getTransactions(ctx: any) {
   const [,] = ctx.queryKey;
   try {
     const response = await api.get(`/api/transactions`);
 
-    return response.data.data;
+    return response.data;
   } catch {}
 }
 

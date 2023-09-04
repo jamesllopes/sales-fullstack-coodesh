@@ -4,10 +4,12 @@ import { api } from "@/services/axios";
 import { snackbar } from "@/utils/snackbar";
 import { useState } from "react";
 import { ListTransactions } from "../ListTransactions";
+import { useQueryClient } from "react-query";
 
 export const DashComponent = () => {
   const [file, setFile] = useState(null);
   const { mutateAsync, status } = useUploadFile();
+  const queryClient = useQueryClient();
 
   const handleFileChange = (e: any) => {
     setFile(e.target.files[0]);
@@ -18,16 +20,14 @@ export const DashComponent = () => {
 
     try {
       const response = await mutateAsync(file);
-      if (response) {
-      }
-    } catch (error) {
-      snackbar("Erro ao enviar", "error");
-      console.log("erro fora", error);
+      queryClient.invalidateQueries("getTransactions");
+    } catch (error: any) {
+      snackbar(error.response.data.message, "error");
     }
   };
 
   return (
-    <div className="w-full h-[100vh] flex items-center justify-center">
+    <div className="w-full flex flex-col  gap-4 items-center justify-center">
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm flex flex-col items-center gap-6">
         <label
           className="block mb-2 text-xl font-medium text-gray-900 dark:text-white"

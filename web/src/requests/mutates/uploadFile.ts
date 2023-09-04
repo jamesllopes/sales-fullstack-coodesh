@@ -5,18 +5,13 @@ import { useMutation } from "react-query";
 import { toast } from "react-toastify";
 
 async function uploadFile(file: any) {
-  console.log("entrou aqui");
-  console.log(file);
-  if (!file) return;
-  const formData = new FormData();
-  //   formData.append("file", file);
-  formData.append(
-    "file",
-    new Blob([file], { type: "text/plain" }),
-    "nome-do-arquivo.txt"
-  );
+  if (!file || !file.name.endsWith(".txt")) {
+    snackbar("Somente arquivos .txt são aceitos", "error");
+    return;
+  }
+
   try {
-    const response = await api.post(`/api/upload`, formData, {
+    const response = await api.post(`/api/upload`, file, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -28,7 +23,7 @@ async function uploadFile(file: any) {
     }
   } catch (error: any) {
     console.log("error", error);
-    snackbar("Erro ao enviar arquivo", "error");
+    snackbar(error.response.data.message, "error");
     return error;
   }
 }

@@ -10,6 +10,12 @@ export type SigninCreadentials = {
   rememberMe?: boolean;
 };
 
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+};
+
 export type UserData = {
   user: {
     id: number;
@@ -20,6 +26,7 @@ export type UserData = {
 };
 
 export type AuthContextData = {
-  user?: UserData | null;
+  user?: User | null;
   signin: (data: SigninCreadentials) => void;
+  logout: () => void;
 };
