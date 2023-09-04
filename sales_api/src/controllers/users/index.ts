@@ -18,7 +18,7 @@ export const signin = async (req: Request, res: Response) => {
     if (!user || !validatePassword) {
       return res
         .status(400)
-        .json({ mensagem: "E-mail e/ou senha inválido(s)." });
+        .json({ message: "E-mail e/ou senha inválido(s)." });
     }
     const token = jwt.sign(
       {
@@ -39,7 +39,7 @@ export const signin = async (req: Request, res: Response) => {
       token,
     });
   } catch (error: any) {
-    return res.status(400).json({ mensagem: error?.message });
+    return res.status(400).json({ message: error?.message });
   }
 };
 
@@ -67,6 +67,6 @@ export const signUp = async (req: Request, res: Response) => {
     }
     return res.status(200).json({ message: "Usuário criado com sucesso." });
   } catch (error: any) {
-    return res.status(400).json({ mensagem: error?.message });
+    return res.status(400).json({ message: error?.message });
   }
 };

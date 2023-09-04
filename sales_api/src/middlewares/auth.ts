@@ -17,7 +17,7 @@ export const authToken = (
 
   if (!authorization) {
     return res.status(401).json({
-      mensagem:
+      message:
         "Para acessar este recurso um token de autenticação válido deve ser enviado.",
     });
   }
@@ -26,7 +26,7 @@ export const authToken = (
 
   if (!token) {
     return res.status(401).json({
-      mensagem:
+      message:
         "Para acessar este recurso um token de autenticação válido deve ser enviado.",
     });
   }
@@ -44,6 +44,6 @@ export const authToken = (
 
     return next();
   } catch {
-    return res.status(401).json({ mensagem: "Token inválido." });
+    return res.status(401).json({ message: "Token inválido." });
   }
 };
