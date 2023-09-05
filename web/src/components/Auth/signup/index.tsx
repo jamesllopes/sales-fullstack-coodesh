@@ -1,15 +1,32 @@
+"use client";
+import { useAuth } from "@/hooks/useAuth";
+import { SignupData } from "@/types/auth";
+import { snackbar } from "@/utils/snackbar";
 import Link from "next/link";
+import { useState } from "react";
 
 export const SignupComponent = () => {
+  const [dataForm, setDataForm] = useState<SignupData>({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const { signup, isLoading } = useAuth();
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (dataForm.password !== confirmPassword) {
+      return snackbar("As senhas não conferem", "error");
+    }
+
+    signup(dataForm as SignupData);
+  };
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            className="mx-auto h-10 w-auto"
-            src="/assets/upload.svg"
-            alt="Your Company"
-          />
+          <img className="mx-auto h-10 w-auto" src="/assets/upload.svg" />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-100">
             Cadastre sua conta
           </h2>
@@ -20,7 +37,7 @@ export const SignupComponent = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
+          <form className="space-y-6" onSubmit={(e) => onSubmit(e)}>
             <div>
               <label
                 htmlFor="name"
@@ -30,6 +47,10 @@ export const SignupComponent = () => {
               </label>
               <div className="mt-2">
                 <input
+                  value={dataForm.name}
+                  onChange={(e) =>
+                    setDataForm({ ...dataForm, name: e.target.value })
+                  }
                   id="name"
                   name="name"
                   type="text"
@@ -48,6 +69,10 @@ export const SignupComponent = () => {
               </label>
               <div className="mt-2">
                 <input
+                  value={dataForm.email}
+                  onChange={(e) =>
+                    setDataForm({ ...dataForm, email: e.target.value })
+                  }
                   id="email"
                   name="email"
                   type="email"
@@ -69,6 +94,10 @@ export const SignupComponent = () => {
               </div>
               <div className="mt-2">
                 <input
+                  value={dataForm.password}
+                  onChange={(e) =>
+                    setDataForm({ ...dataForm, password: e.target.value })
+                  }
                   id="password"
                   name="password"
                   type="password"
@@ -90,6 +119,8 @@ export const SignupComponent = () => {
               </div>
               <div className="mt-2">
                 <input
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   id="password"
                   name="password"
                   type="password"

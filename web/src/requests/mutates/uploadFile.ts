@@ -1,19 +1,20 @@
 import { api } from "@/services/axios";
 import { snackbar } from "@/utils/snackbar";
-// import { DirectTransferProps } from "@/types/internalTransfer";
+import { parseCookies } from "nookies";
 import { useMutation } from "react-query";
-import { toast } from "react-toastify";
 
 async function uploadFile(file: any) {
   if (!file || !file.name.endsWith(".txt")) {
     snackbar("Somente arquivos .txt são aceitos", "error");
     return;
   }
+  const { "@SALES_TOKEN": token } = parseCookies();
 
   try {
     const response = await api.post(`/api/upload`, file, {
       headers: {
         "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -22,7 +23,6 @@ async function uploadFile(file: any) {
       return response;
     }
   } catch (error: any) {
-    console.log("error", error);
     snackbar(error.response.data.message, "error");
     return error;
   }

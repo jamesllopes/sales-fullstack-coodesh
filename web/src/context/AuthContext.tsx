@@ -18,25 +18,51 @@ export const AuthContext = createContext<AuthContextData>(
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const signin = async ({ email, password }: SigninCreadentials) => {
     try {
-      // setIsLoading(true);
+      setIsLoading(true);
       const response: any = await api.post<{ data: UserData }>("api/signin", {
         email,
         password,
       });
-      setUser(response.data.user);
+      api.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${response.data.token}`;
       setCookie(null, "@SALES_TOKEN", response?.data?.token, {
         maxAge: 60 * 60,
         path: "/",
+        httpOnly: false,
       });
+      setUser(response.data.user);
 
       snackbar(`Bem-Vindo, ${response?.data?.user?.name}!`, "success");
       router.push("/dashboard");
     } catch (error: any) {
-      snackbar(error.response.data.message, "error");
+      snackbar(error?.response?.data?.message, "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const signup = async ({ email, name, password }: SignupData) => {
+    setIsLoading(true);
+
+    try {
+      await api.post<{ data: UserData }>("/api/signup", {
+        email,
+        name,
+        password,
+      });
+
+      snackbar("Conta criada com sucesso", "success");
+      router.push("/auth/signin");
+    } catch (error: any) {
+      snackbar(error?.response?.data?.message, "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -54,6 +80,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signin,
         user,
         logout,
+        isLoading,
+        signup,
       }}
     >
       {children}

@@ -122,7 +122,7 @@ export const getTransactions = async (req: Request, res: Response) => {
         "date",
         "transactionType.description",
         "transactionType.nature",
-        "transactionType.id", // Incluímos o ID no GROUP BY
+        "transactionType.id",
       ],
     });
 

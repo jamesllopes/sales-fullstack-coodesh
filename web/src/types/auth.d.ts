@@ -29,4 +29,6 @@ export type AuthContextData = {
   user?: User | null;
   signin: (data: SigninCreadentials) => void;
   logout: () => void;
+  isLoading: boolean;
+  signup: (data: SignupData) => void;
 };
