@@ -24,10 +24,6 @@ export const SigninComponent = () => {
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-100">
             Entre com sua conta
           </h2>
-          <p className="text-gray-90 text-center mt-4 text-sm">
-            Você pode fazer um cadastro, ou logar com a conta que foi
-            disponibilizada para teste.
-          </p>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -91,7 +87,7 @@ export const SigninComponent = () => {
           </form>
 
           <p className="mt-10 text-center text-sm text-gray-90">
-            Se preferir fazer o cadastro,{" "}
+            Faça seu cadastro,{" "}
             <Link
               href="/auth/signup"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"

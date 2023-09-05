@@ -1,5 +1,9 @@
 # Projeto de Upload de Arquivos
 
+## Link da apresentação em video
+
+https://www.loom.com/embed/25f6d277ff114fad984e526dd3f7922b
+
 ## Funcionalidades
 
 - Fazer autenticação de usuário
