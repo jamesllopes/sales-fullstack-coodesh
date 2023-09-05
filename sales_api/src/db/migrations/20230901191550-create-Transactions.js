@@ -13,8 +13,8 @@ module.exports = {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
-          model: "TypeTransactions", // Nome da tabela referenciada
-          key: "id", // Nome da coluna referenciada
+          model: "TypeTransactions",
+          key: "id",
         },
       },
       user_id: {

@@ -3,7 +3,6 @@ import { userValidation } from "../../validations/signupSchema";
 import Users from "../../db/models/Users";
 import { validationSignin } from "../../validations/signinSchema";
 import { findUserByEmail } from "../../models/users";
-// import * as bcrypt from "bcrypt";
 const bcrypt = require("bcrypt");
 import jwt from "jsonwebtoken";
 import { jwtSecret } from "../../config/jwtSecret";
@@ -13,7 +12,7 @@ export const signin = async (req: Request, res: Response) => {
 
   try {
     await validationSignin.validate(req.body);
-    const user: any = await findUserByEmail(email);
+    const user = await findUserByEmail(email);
     const validatePassword = await bcrypt.compare(password, user?.password);
     if (!user || !validatePassword) {
       return res

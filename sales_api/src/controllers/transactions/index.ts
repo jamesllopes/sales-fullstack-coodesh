@@ -2,20 +2,18 @@ import { Request, Response } from "express";
 import { objectData } from "../../utils/typeDescription";
 const path = require("path");
 import fs from "fs/promises";
-import { findUserById } from "../../models/users";
 import Sequelize from "sequelize";
-import TypeTransactions, {
-  TypeTransactionsInput,
-} from "../../db/models/TypeTransactions";
+import TypeTransactions from "../../db/models/TypeTransactions";
 import Transactions from "../../db/models/Transations";
-import { TypeTransactionProps } from "../../types/transactions";
+import {
+  TableTypeTransactionProps,
+  TransactionProps,
+} from "../../types/transactions";
 interface CustomRequest extends Request {
   user?: {
     id: string | number;
   };
 }
-
-const { Op } = Sequelize;
 
 export const uploadFile = async (req: CustomRequest, res: Response) => {
   const userId = req?.user?.id;
@@ -40,7 +38,7 @@ export const uploadFile = async (req: CustomRequest, res: Response) => {
     });
 
     const hasNullTypeItem = typeTransaction.some(
-      (transact: any) => transact.type_id === null
+      (transact: TableTypeTransactionProps) => transact.type === null
     );
 
     if (hasNullTypeItem) {
@@ -72,7 +70,7 @@ export const uploadFile = async (req: CustomRequest, res: Response) => {
       };
     });
     const hasNullItem = transactionsToCreate.some(
-      (transact: any) => transact.type_id === null
+      (transact: TransactionProps) => transact.type_id === null
     );
 
     if (hasNullItem) {
@@ -113,7 +111,7 @@ export const getTransactions = async (req: Request, res: Response) => {
         {
           model: TypeTransactions,
           as: "transactionType",
-          attributes: ["description", "nature"], // Não selecionamos nenhum atributo da tabela TypeTransactions
+          attributes: ["description", "nature"],
         },
       ],
       group: [
